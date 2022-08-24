@@ -105,6 +105,7 @@ export class Game {
 
     this.currentPlayer += 1;
     if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
+    console.log("------")
     return true;
   }
 
@@ -119,10 +120,13 @@ export class Game {
         this.currentPlayer += 1;
         if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
 
+        console.log(`Is there a winner: ${winner ? "Yes" : "No"}`)
+        console.log("------")
         return winner;
       } else {
         this.currentPlayer += 1;
         if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
+        console.log("------")
         return true;
       }
     } else {
@@ -135,7 +139,8 @@ export class Game {
 
       this.currentPlayer += 1;
       if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
-
+      console.log(`Is there a winner: ${winner ? "Yes" : "No"}`)
+      console.log("------")
       return winner;
     }
   }
