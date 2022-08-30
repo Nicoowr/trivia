@@ -148,3 +148,59 @@ test("One player wins 7 times in a row", async () => {
 
   });
 });
+
+test("Last player is in penalty box and rolls odd and answers correctly", async () => {
+  runGoldenMaster("last-player-penalty-odd-correct", async () => {
+    const newGame = new Game();
+    newGame.add("alice");
+    newGame.add("bob");
+
+    console.log("----- Round 1 -----")
+    newGame.roll(2);
+    newGame.wasCorrectlyAnswered();
+    newGame.roll(3);
+    newGame.wrongAnswer();
+
+    console.log("----- Round 2 -----")
+    newGame.roll(3);
+    newGame.wasCorrectlyAnswered();
+    newGame.roll(3);
+    newGame.wasCorrectlyAnswered();
+  });
+});
+
+test("Last player is in penalty box and rolls even and answers correctly", async () => {
+  runGoldenMaster("last-player-penalty-even-correct", async () => {
+    const newGame = new Game();
+    newGame.add("alice");
+    newGame.add("bob");
+
+    console.log("----- Round 1 -----")
+    newGame.roll(2);
+    newGame.wasCorrectlyAnswered();
+    newGame.roll(3);
+    newGame.wrongAnswer();
+
+    console.log("----- Round 2 -----")
+    newGame.roll(3);
+    newGame.wasCorrectlyAnswered();
+    newGame.roll(2);
+    newGame.wasCorrectlyAnswered();
+  });
+});
+
+test("One player rolls multiple times", async () => {
+  runGoldenMaster("one-player-rolls-multiple-times", async () => {
+    const newGame = new Game();
+    newGame.add("alice");
+    newGame.add("bob");
+
+    console.log("----- Round 1 -----")
+    newGame.roll(2);
+    newGame.roll(3);
+    newGame.roll(1);
+    newGame.wasCorrectlyAnswered();
+    newGame.wrongAnswer();
+
+  });
+});
