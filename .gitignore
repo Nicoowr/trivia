@@ -1,3 +1,4 @@
 /node_modules
 /coverage
 /golden-master
+.idea
