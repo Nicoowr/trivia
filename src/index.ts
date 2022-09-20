@@ -2,103 +2,84 @@
 import { Player } from "./Player";
 import { Board } from "./Board";
 import { GameQuestions } from "./Question";
+import { PlayerSet } from "./PlayerSet";
 
 export class Game {
   private board: Board = new Board()
-  private players: Array<Player> = [];
-  private inPenaltyBox: Array<boolean> = [];
-  private currentPlayerIndex: number = 0;
+  private playersSet: PlayerSet = new PlayerSet();
   private isGettingOutOfPenaltyBox: boolean = false;
 
   private gameQuestions = new GameQuestions()
 
-  public add(name: string): boolean {
-    this.players = [...this.players, new Player(name)];
-    this.inPenaltyBox[this.howManyPlayers() - 1] = false;
-
-    console.log(name + " was added");
-    console.log("They are player number " + this.players.length);
-
-    return true;
+  public add(name: string) {
+    this.playersSet.addPlayer(new Player(name));
   }
 
-  private howManyPlayers(): number {
-    return this.players.length;
-  }
-
-  public currentPlayer(): Player {
-    return this.players[this.currentPlayerIndex];
-  }
 
   public roll(roll: number) {
-    console.log(this.players[this.currentPlayerIndex].getName() + " is the current player");
+    console.log(this.playersSet.getCurrentPlayer().getName() + " is the current player");
     console.log("They have rolled a " + roll);
 
-    if (this.inPenaltyBox[this.currentPlayerIndex]) {
+    if (this.playersSet.getCurrentPlayer().isInPenaltyBox()) {
       if (roll % 2 != 0) {
         this.isGettingOutOfPenaltyBox = true;
 
-        console.log(this.players[this.currentPlayerIndex].getName() + " is getting out of the penalty box");
-        this.players[this.currentPlayerIndex].goAhead(this.board, roll);
+        console.log(this.playersSet.getCurrentPlayer().getName() + " is getting out of the penalty box");
+        this.playersSet.getCurrentPlayer().goAhead(this.board, roll);
 
-        console.log(this.players[this.currentPlayerIndex].getName() + "'s new location is " + this.players[this.currentPlayerIndex].getPlace());
-        this.currentPlayer().drawQuestion(this.gameQuestions, this.board)
+        console.log(this.playersSet.getCurrentPlayer().getName() + "'s new location is " + this.playersSet.getCurrentPlayer().getPlace());
+        this.playersSet.getCurrentPlayer().drawQuestion(this.gameQuestions, this.board)
       } else {
-        console.log(this.players[this.currentPlayerIndex].getName() + " is not getting out of the penalty box");
+        console.log(this.playersSet.getCurrentPlayer().getName() + " is not getting out of the penalty box");
         this.isGettingOutOfPenaltyBox = false;
       }
     } else {
-      this.players[this.currentPlayerIndex].goAhead(this.board, roll);
+      this.playersSet.getCurrentPlayer().goAhead(this.board, roll);
 
-      console.log(this.players[this.currentPlayerIndex].getName() + "'s new location is " + this.players[this.currentPlayerIndex].getPlace());
-      this.currentPlayer().drawQuestion(this.gameQuestions, this.board)
+      console.log(this.playersSet.getCurrentPlayer().getName() + "'s new location is " + this.playersSet.getCurrentPlayer().getPlace());
+      this.playersSet.getCurrentPlayer().drawQuestion(this.gameQuestions, this.board)
     }
   }
 
   private didPlayerWin(): boolean {
-    return !(this.players[this.currentPlayerIndex].getPurseMoney() == 6);
+    return !(this.playersSet.getCurrentPlayer().getPurseMoney() == 6);
   }
 
   public wrongAnswer(): boolean {
     console.log("Question was incorrectly answered");
-    console.log(this.players[this.currentPlayerIndex].getName() + " was sent to the penalty box");
-    this.inPenaltyBox[this.currentPlayerIndex] = true;
-
-    this.currentPlayerIndex += 1;
-    if (this.currentPlayerIndex == this.players.length) this.currentPlayerIndex = 0;
+    console.log(this.playersSet.getCurrentPlayer().getName() + " was sent to the penalty box");
+    this.playersSet.getCurrentPlayer().goToJail()
+    this.playersSet.switchToNextPlayer()
     console.log("------")
     return true;
   }
 
   public wasCorrectlyAnswered(): boolean {
-    if (this.inPenaltyBox[this.currentPlayerIndex]) {
+    if (this.playersSet.getCurrentPlayer().isInPenaltyBox()) {
       if (this.isGettingOutOfPenaltyBox) {
         console.log("Answer was correct!!!!");
-        this.players[this.currentPlayerIndex].answersCorrectly()
-        console.log(this.players[this.currentPlayerIndex].getName() + " now has " + this.players[this.currentPlayerIndex].getPurseMoney() + " Gold Coins.");
+        this.playersSet.getCurrentPlayer().answersCorrectly()
+        console.log(this.playersSet.getCurrentPlayer().getName() + " now has " + this.playersSet.getCurrentPlayer().getPurseMoney() + " Gold Coins.");
 
         var winner = this.didPlayerWin();
-        this.currentPlayerIndex += 1;
-        if (this.currentPlayerIndex == this.players.length) this.currentPlayerIndex = 0;
+        this.playersSet.switchToNextPlayer()
         console.log(`Is there a winner: ${winner ? "Yes" : "No"}`)
         console.log("------")
         return winner;
       } else {
-        this.currentPlayerIndex += 1;
-        if (this.currentPlayerIndex == this.players.length) this.currentPlayerIndex = 0;
+        this.playersSet.switchToNextPlayer()
         console.log("------")
         return true;
       }
     } else {
       console.log("Answer was correct!!!!");
 
-      this.players[this.currentPlayerIndex].answersCorrectly()
-      console.log(this.players[this.currentPlayerIndex].getName() + " now has " + this.players[this.currentPlayerIndex].getPurseMoney() + " Gold Coins.");
+      this.playersSet.getCurrentPlayer().answersCorrectly()
+      console.log(this.playersSet.getCurrentPlayer().getName() + " now has " + this.playersSet.getCurrentPlayer().getPurseMoney() + " Gold Coins.");
 
       var winner = this.didPlayerWin();
 
-      this.currentPlayerIndex += 1;
-      if (this.currentPlayerIndex == this.players.length) this.currentPlayerIndex = 0;
+      this.playersSet.switchToNextPlayer()
       console.log(`Is there a winner: ${winner ? "Yes" : "No"}`)
       console.log("------")
       return winner;

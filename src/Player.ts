@@ -5,6 +5,7 @@ import { GameQuestions, Question } from "./Question";
 export class Player {
   private purse: number = 0;
   private place: Place = 0;
+  private inPenaltyBox: boolean = false
 
   constructor(private name: string) {
   }
@@ -43,5 +44,12 @@ export class Player {
     return gameQuestions.drawQuestion(board.determineQuestionCategory(this.getPlace()));
   }
 
+  public isInPenaltyBox() {
+    return this.inPenaltyBox;
+  }
+
+  public goToJail(): void {
+    this.inPenaltyBox = true;
+  }
 
 }
