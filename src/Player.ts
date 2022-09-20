@@ -48,8 +48,16 @@ export class Player {
     return this.inPenaltyBox;
   }
 
-  public goToJail(): void {
+  private goToJail(): void {
     this.inPenaltyBox = true;
+  }
+
+  public giveWrongAnswer() {
+    console.log("Question was incorrectly answered");
+    console.log(this.getName() + " was sent to the penalty box");
+    this.goToJail()
+    console.log("------")
+    return;
   }
 
 }

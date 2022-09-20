@@ -45,13 +45,10 @@ export class Game {
     return !(this.playersSet.getCurrentPlayer().getPurseMoney() == 6);
   }
 
-  public wrongAnswer(): boolean {
-    console.log("Question was incorrectly answered");
-    console.log(this.playersSet.getCurrentPlayer().getName() + " was sent to the penalty box");
-    this.playersSet.getCurrentPlayer().goToJail()
+  public wrongAnswer() {
+    this.playersSet.getCurrentPlayer().giveWrongAnswer()
     this.playersSet.switchToNextPlayer()
-    console.log("------")
-    return true;
+    return;
   }
 
   public wasCorrectlyAnswered(): boolean {
